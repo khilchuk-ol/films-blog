@@ -1,0 +1,31 @@
+{
+  "name": "films-blog",
+  "version": "1.0.0",
+  "description": "restful node.js application with MERN stack",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khilchuk-ol/films-blog.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "mongodb",
+    "rest",
+    "api"
+  ],
+  "author": "khilchuk-ol",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/khilchuk-ol/films-blog/issues"
+  },
+  "homepage": "https://github.com/khilchuk-ol/films-blog#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.4"
+  }
+}

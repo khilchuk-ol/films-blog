@@ -1,15 +1,41 @@
 export default mongoose => {
     let schema = mongoose.Schema(
         {
-            title: { type: String, required: true },
+            title: 
+            { 
+              type: String, 
+              required: true 
+            },
             description: String,
             text: String,
-            comments: [{
+            comments: 
+            [{
               date: Date,
               username: String,
               text: String,
-              rating : {type: Number, min: 0, max: 10, require: true}
-            }]
+              rating: 
+              {
+                type: Number, 
+                min: 0, 
+                max: 10, 
+                required: true
+              },
+              author:
+              {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'user'
+              }
+            }],
+            date : 
+            { 
+              type: Date, 
+              default: Date.now 
+            },
+            author: 
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: 'user'
+            }
         },
         { timestamps: true }
       );

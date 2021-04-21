@@ -18,7 +18,7 @@ export default mongoose => {
       const { __v, _id, ...object } = this.toObject();
       object.id = _id;
       return object;
-    });
+    }); 
 
     schema.virtual('rating').get(function() {
       return this.comments ? this.comments.map(c => c.rating).reduce((a, b) => a + b, 0) / this.comments.length : 0;

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const logger = require("morgan");
 
 const app = express();
 
@@ -7,8 +8,28 @@ let corsOptions = {
     origin: 'http://localhost:8081'
 };
 
+/* if u consider using ejs (embeded javascript) for views, 
+ * app.set("views", path.resolve(__dirname, "views"));
+ * app.set("view engine", "ejs");
+ * 
+ * add folder ./views where html pages with ejs will live
+ * embeded js looks like:
+ * <body>
+ *   <%= message %>
+ * </body>
+ * 
+ * app.get("/", function(request, response) {
+ *    response.render("index", {
+ *       message: "Hey everyone! This is my webpage."
+ *    });
+ * });
+ * 
+ * this will be rendered to plain html
+ */
+
 // configure app
 app.use(cors(corsOptions));
+app.use(logger('dev'));
 
 app.use(express.json());
 app.use(express.urlencoded());

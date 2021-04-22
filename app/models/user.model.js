@@ -39,6 +39,10 @@ export default mongoose => {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'role'
             }]
+        },
+        {
+            optimisticConcurrency: true,
+            timestamp: true
         }
     );
 

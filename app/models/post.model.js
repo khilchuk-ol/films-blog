@@ -37,7 +37,10 @@ export default mongoose => {
               ref: 'user'
             }
         },
-        { timestamps: true }
+        {
+          optimisticConcurrency: true,
+          timestamp: true
+        }
       );
     
     schema.method("toJSON", function() {

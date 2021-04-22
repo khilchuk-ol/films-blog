@@ -7,6 +7,10 @@ export default mongoose => {
                 required: true,
                 enum: ['user', 'administrator', 'moderator']
             }
+        },
+        {
+            optimisticConcurrency: true,
+            timestamp: true
         }
     );
 

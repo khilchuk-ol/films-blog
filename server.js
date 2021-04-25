@@ -1,6 +1,13 @@
-const express = require('express');
-const cors = require('cors');
-const logger = require("morgan");
+import express from 'express';
+import cors from 'cors';
+import logger from 'morgan';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import expSession from 'express-session';
+import flash from 'connect-flash';
+import passport from 'passport';
+
+import postRouter  from './app/routes/post_router';
 
 const app = express();
 
@@ -34,6 +41,22 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 
+app.use(cookieParser);
+
+app.use(expSession({  
+  secret: "TKRv0IJs=HYqrvagQ#&!F!%V]Ww/4KiVs$s,<<MX",
+  resave: true,
+  saveUninitialized: true
+}));
+
+app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+const staticPath = path.resolve(__dirname, "public");
+app.use(express.static(staticPath));
+
 // connect to db
 import db from './app/models/index.js';
 db.mongoose.connect(db.url, {
@@ -46,10 +69,37 @@ db.mongoose.connect(db.url, {
       process.exit();
   });
 
+//routing
+/*
+ * parameters:
+ * app.get("/users/:userid", (req, res) => {
+ *   let userId = parseInt(req.params.userid, 10);
+ * });
+ * 
+ * app.get(/^\/users\/(\d+)$/, function(req, res) {
+ *   let userId = parseInt(req.params[0], 10);
+ * });
+ * 
+ * app.get(/^\/users\/(\d+)-(\d+)$/, function(req, res) {
+ *   let startId = parseInt(req.params[0], 10);
+ *   let endId = parseInt(req.params[1], 10);
+ * });
+ * 
+ * query arguments:
+ * url: https://www.google.com/search?q=javascript-themed%20burrito
+ * app.get("/search", function(req, res) {
+ *   // req.query.q == "javascript-themed burrito"
+ * });
+ * 
+ * 
+ */
+
 // api
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to films blog" });
 });
+
+app.use('/posts', postRouter);
 
 // listen to port
 const PORT = process.env.PORT || 8080;

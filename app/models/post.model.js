@@ -8,6 +8,7 @@ export default mongoose => {
             },
             description: String,
             text: String,
+            photos: [String],
             comments: 
             [{
               date: Date,

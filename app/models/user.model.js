@@ -1,3 +1,9 @@
+import bcrypt from 'bcrypt-node';
+import { urlencoded } from 'express';
+const SALT_FACTOR = 10;
+
+const noop = () => {};
+
 export default mongoose => {
     let schema = mongoose.Schema(
         {
@@ -50,7 +56,36 @@ export default mongoose => {
         const { __v, _id, ...object } = this.toObject();
         object.id = _id;
         return object;
-      }); 
+    });
+    
+    schema.pre('save', function(done) {
+        let user = this;
+
+        if(!user.isModified('password')) {
+            return done();
+        }
+
+        bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
+            if(err) {
+                 return done(err);
+            }
+
+            bcrypt.hash(user.password, salt, noop, function(err, hashedPass) {
+                if(err) {
+                    return done(err);
+                }
+
+                user.password = hashedPass;
+                done();
+            });
+        });
+    });
+
+    schema.methods.checkPassword = function(guess, done) {
+        bcrypt.compare(guess, this.password, function(err, isMatch) {
+            done(err, isMatch);
+        });
+    };
 
     const User = mongoose.model('user', schema);
     return User;

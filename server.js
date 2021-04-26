@@ -7,7 +7,9 @@ import expSession from 'express-session';
 import flash from 'connect-flash';
 import passport from 'passport';
 
-import postRouter  from './app/routes/post_router';
+import postRouter from './app/routes/post_router';
+import userRouter from './app/routes/user_router';
+import setUpPassport from './app/setuppassport';
 
 const app = express();
 
@@ -69,6 +71,8 @@ db.mongoose.connect(db.url, {
       process.exit();
   });
 
+setUpPassport();
+
 //routing
 /*
  * parameters:
@@ -95,10 +99,13 @@ db.mongoose.connect(db.url, {
  */
 
 // api
+
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to films blog" });
 });
 
+//routers
+app.use('/user', userRouter);
 app.use('/posts', postRouter);
 
 // listen to port

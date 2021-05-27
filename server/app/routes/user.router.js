@@ -31,20 +31,27 @@ api.get("/login/failed", (req, res) => {
   });
 });
 
-api.post(
-  "/login",
+api.post("/login", (req, res) => {
   passport.authenticate("login", {
     successRedirect: "/",
     failureRedirect: "/login/failed",
     failureFlash: true,
-  })
-);
+  });
+
+  const currentUser = (
+    await controller.getById(req.session.passport.user)
+  ).toObject();
+  res.send(currentUser);
+});
 
 //logout
 api.get("/logout", function (req, res) {
   req.logout();
   res.redirect("/");
 });
+
+//register
+api.post("/register", controller.create);
 
 api.get("/", controller.findAll);
 

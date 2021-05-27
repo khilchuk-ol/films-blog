@@ -120,13 +120,13 @@ app.use(async function (req, res, next) {
 
 // api
 
-app.get("/", (req, res) => {
+app.get("/api/", (req, res) => {
   res.json({ message: "Welcome to films blog" });
 });
 
 //routers
-app.use("/users", userRouter);
-app.use("/posts", postRouter);
+app.use("/api/users", userRouter);
+app.use("/api/posts", postRouter);
 
 // listen to port
 const PORT = process.env.PORT || 8080;

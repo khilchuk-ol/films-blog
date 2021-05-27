@@ -16,18 +16,18 @@ function create(req, res) {
     description: req.body.description,
     text: req.body.text,
     photos: req.body.photos,
-    author: req.body.authorId,
+    author: res.locals.currentUser._id,
   });
 
   //Save in the db
   post
     .save(post)
     .then((data) => {
-      res.send(data);
+      res.redirect("/");
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Pot.",
+        message: err.message || "Some error occurred while creating the Post.",
       });
     });
 }
@@ -47,38 +47,41 @@ function findAll(req, res) {
   const { limit, offset } = getPagination(page, size);
 
   Post.paginate(condition, { offset, limit })
-    .then((data) => {
+    .then(async (data) => {
+      for (let post of data.docs) {
+        await post.populate("author").populate("comments").execPopulate();
+      }
       res.send({
         totalItems: data.totalDocs,
-        tutorials: data.docs,
+        items: data.docs,
         totalPages: data.totalPages,
         currentPage: data.page - 1,
       });
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials.",
+        message: err.message || "Some error occurred while retrieving posts.",
       });
     });
 }
 
 function findOne(req, res) {
-  const id = req.body.id;
+  const id = req.params.id;
 
   Post.findById(id)
+    .populate("author")
     .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: "Not found Tutorial with id " + id,
+          message: "Not found Post with id " + id,
         });
       } else {
-        res.send(data);
+        res.send({ post: data });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving Tutorial with id=" + id,
+        message: err.message || "Error retrieving Post with id=" + id,
       });
     });
 }
@@ -100,12 +103,12 @@ function update(req, res) {
           message: `Cannot update Post with id=${id}. Maybe Post was not found!`,
         });
       } else {
-        res.send({ message: "Tutorial was updated successfully." });
+        res.send({ message: "Post was updated successfully." });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating Post with id=" + id,
+        message: err.message || "Error updating Post with id=" + id,
       });
     });
 }
@@ -120,12 +123,12 @@ function remove(req, res) {
           message: `Cannot delete Post with id=${id}. Maybe Post was not found!`,
         });
       } else {
-        res.send({ message: "Tutorial was deleted successfully." });
+        res.send({ message: "Post was deleted successfully." });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error deleting Post with id=" + id,
+        message: err.message || "Error deleting Post with id=" + id,
       });
     });
 }
@@ -135,7 +138,7 @@ function removeAll(req, res) {
   const authorId = req.body.authorId;
   let condition = authorId ? { author: authorId } : {};
 
-  Post.deleteMeny(condition)
+  Post.deleteMany(condition)
     .then((data) => {
       res.send({
         message: `${data.deletedCount} Posts were deleted successfully!`,
@@ -143,12 +146,13 @@ function removeAll(req, res) {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while removing all posts.",
+        message:
+          err.message || "Some error occurred while removing all comments.",
       });
     });
 }
 
-const controller = {
+const services = {
   create,
   findOne,
   findAll,
@@ -157,4 +161,4 @@ const controller = {
   removeAll,
 };
 
-export default controller;
+export default services;

@@ -81,6 +81,18 @@ db.mongoose
 
 setUpPassport();
 
+//set user as local variable, so that views can see it
+app.use(async function (req, res, next) {
+  if (req.session.passport && req.session.passport.user) {
+    res.locals.currentUser = (
+      await controller.getById(req.session.passport.user)
+    ).toObject();
+    res.locals.errors = req.flash("error");
+    res.locals.infos = req.flash("info");
+  }
+  next();
+});
+
 //routing
 /*
  * parameters:

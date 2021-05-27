@@ -46,14 +46,6 @@ api.get("/logout", function (req, res) {
   res.redirect("/");
 });
 
-//set user as local variable, so that views can see it
-api.use(function (req, res, next) {
-  res.locals.currentUser = req.user;
-  res.locals.errors = req.flash("error");
-  res.locals.infos = req.flash("info");
-  next();
-});
-
 api.get("/", controller.findAll);
 
 api.get("/:id", controller.findOne);

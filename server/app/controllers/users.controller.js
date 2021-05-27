@@ -2,6 +2,7 @@ import db from "../models/models.js";
 import { getPagination } from "./pagination.js";
 
 const User = db.users;
+const Post = db.posts;
 
 function create(req, res) {
   // Validate request
@@ -31,21 +32,24 @@ function create(req, res) {
     });
 }
 
-//Can also specify title filter and author filter
+//Can also specify username filter
 function findAll(req, res) {
   const { username, page, size } = req.query;
 
-  let condition = title
+  let condition = username
     ? { username: { $regex: new RegExp(username), $options: "i" } }
     : {};
 
   const { limit, offset } = getPagination(page, size);
 
   User.paginate(condition, { offset, limit })
-    .then((data) => {
+    .then(async (data) => {
+      for (let user of users) {
+        await user.populate("posts").execPopulate();
+      }
       res.send({
         totalItems: data.totalDocs,
-        tutorials: data.docs,
+        items: data.docs,
         totalPages: data.totalPages,
         currentPage: data.page - 1,
       });
@@ -58,7 +62,7 @@ function findAll(req, res) {
 }
 
 function findOne(req, res) {
-  const id = req.body.id;
+  const id = req.params.id;
 
   User.findById(id)
     .then((data) => {
@@ -67,14 +71,21 @@ function findOne(req, res) {
           message: "Not found User with id " + id,
         });
       } else {
-        res.send(data);
+        Post.find({ author: data._id }).then((posts) => {
+          data.posts = posts;
+          res.send({ user: data });
+        });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving User with id=" + id,
+        message: err.message || "Error retrieving User with id=" + id,
       });
     });
+}
+
+async function getById(id) {
+  return await User.findById(id);
 }
 
 function update(req, res) {
@@ -101,7 +112,7 @@ function update(req, res) {
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating User with id=" + id,
+        message: err.message || "Error updating User with id=" + id,
       });
       return false;
     });
@@ -122,7 +133,7 @@ function remove(req, res) {
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error deleting User with id=" + id,
+        message: err.message || "Error deleting User with id=" + id,
       });
     });
 }
@@ -133,6 +144,7 @@ const controller = {
   findAll,
   update,
   remove,
+  getById,
 };
 
 export default controller;

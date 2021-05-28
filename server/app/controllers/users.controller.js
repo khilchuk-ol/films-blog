@@ -16,6 +16,7 @@ function create(req, res) {
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
+    picture: req.body.picture,
     roles: req.body.roles,
   });
 

@@ -21,7 +21,7 @@ export default (mongoose, mongoosePaginate) => {
         minLength: [8, "Too short password, it must be at least 8 characters"],
         validate: {
           validator: function (v) {
-            return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+            return v.search(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) > -1;
           },
           message: (props) =>
             `${props.value} is not a valid phone number!\nIt must contain at least one letter and one number`,
@@ -33,10 +33,19 @@ export default (mongoose, mongoosePaginate) => {
         unique: true,
         validate: {
           validator: function (v) {
-            return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return (
+              v.search(
+                /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+              ) > -1
+            );
           },
           message: (props) => `${props.value} is not a valid email address!`,
         },
+      },
+      picture: {
+        type: String,
+        default: "default.png",
+        required: true,
       },
       roles: [
         {

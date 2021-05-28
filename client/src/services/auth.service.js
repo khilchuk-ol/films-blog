@@ -23,8 +23,13 @@ class AuthService {
     await axios.get(API_URL + "logout");
   }
 
-  async register(username, email, password) {
-    return axios.post(API_URL + "register", { username, email, password });
+  async register(username, email, password, picture) {
+    return axios.post(API_URL + "register", {
+      username,
+      email,
+      password,
+      picture,
+    });
   }
 
   getCurrentUser() {

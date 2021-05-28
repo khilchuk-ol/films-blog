@@ -6,20 +6,22 @@ import cookieParser from "cookie-parser";
 import expSession from "express-session";
 import flash from "connect-flash";
 import passport from "passport";
+import busboy from "busboy";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
 import postRouter from "./app/routes/post.router.js";
 import userRouter from "./app/routes/user.router.js";
+import imgRouter from "./app/routes/img.route.js";
 import setUpPassport from "./app/setuppassport.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
-let corsOptions = {
-  origin: "http://localhost:8081",
-};
+/*let corsOptions = {
+  origin: "http://localhost:8080",
+};*/
 
 /* if u consider using ejs (embeded javascript) for views,
  * app.set("views", path.resolve(__dirname, "views"));
@@ -41,7 +43,7 @@ let corsOptions = {
  */
 
 // configure app
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 app.use(logger("dev"));
 
 app.use(express.json());
@@ -61,6 +63,8 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(busboy);
 
 //for static files
 const staticPath = path.resolve(__dirname, "public");
@@ -127,6 +131,7 @@ app.get("/api/", (req, res) => {
 //routers
 app.use("/api/users", userRouter);
 app.use("/api/posts", postRouter);
+app.use("/api/img", imgRouter);
 
 // listen to port
 const PORT = process.env.PORT || 8080;

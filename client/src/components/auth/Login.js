@@ -3,8 +3,8 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import PropTypes from "prop-types";
-import { isEmail } from "validator";
 
+import { required } from "./ValidationAlerts.js";
 import AuthService from "../../services/auth.service.js";
 
 function Login(props) {
@@ -14,28 +14,9 @@ function Login(props) {
     loading: false,
     message: "",
   });
+
   let form = {};
   let checkBtn = {};
-
-  const required = (value) => {
-    if (!value) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          This field is required!
-        </div>
-      );
-    }
-  };
-
-  const email = (value) => {
-    if (!isEmail(email)) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          This is not a valid email.
-        </div>
-      );
-    }
-  };
 
   const onChangeUsername = (e) => {
     setState((prev) => ({
@@ -87,20 +68,6 @@ function Login(props) {
           backgroundColor: "#FFFF33",
         }}
       >
-        <div style={{ paddingBottom: "1rem", paddingTop: "1rem" }}>
-          <img
-            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-            alt="profile-img"
-            className="profile-img-card img-thumbnail"
-            style={{
-              padding: "0",
-              borderRadius: "50%",
-              borderColor: "#898989",
-              borderWidth: "medium",
-            }}
-          />
-        </div>
-
         <Form
           onSubmit={handleLogin}
           ref={(c) => {

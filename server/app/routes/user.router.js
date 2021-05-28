@@ -31,7 +31,7 @@ api.get("/login/failed", (req, res) => {
   });
 });
 
-api.post("/login", (req, res) => {
+api.post("/login", async (req, res) => {
   passport.authenticate("login", {
     successRedirect: "/",
     failureRedirect: "/login/failed",

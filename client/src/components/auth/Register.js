@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
+import { Form } from "reactstrap";
+import { Input } from "reactstrap";
+import { Button } from "reactstrap";
 
 import Spinner from "../helping/Spinner.js";
 import AuthService from "../../services/auth.service.js";
@@ -137,19 +137,23 @@ function Register(props) {
             <Spinner />
           ) : (
             <span className="cursor-pointer">
-              <img
-                src={PIC_FOLDER + state.picture}
-                alt="profile-img"
-                className="profile-img-card img-thumbnail"
-                style={{
-                  padding: "0",
-                  borderRadius: "50%",
-                  borderColor: "#898989",
-                  borderWidth: "medium",
-                }}
-              />
+              <label htmlFor="fileInput">
+                <img
+                  src={PIC_FOLDER + state.picture}
+                  alt="profile-img"
+                  className="profile-img-card img-thumbnail"
+                  style={{
+                    padding: "0",
+                    borderRadius: "50%",
+                    borderColor: "#898989",
+                    borderWidth: "medium",
+                  }}
+                />
+              </label>
+
               <input
                 hidden
+                id="fileInput"
                 type="file"
                 name="picture"
                 onChange={onChangePicture}
@@ -157,7 +161,7 @@ function Register(props) {
                 ref={(c) => {
                   fileForm = c;
                 }}
-              />
+              ></input>
             </span>
           )}
         </div>
@@ -221,6 +225,7 @@ function Register(props) {
 
           <div className="form-group">
             <button
+              type="submit"
               className="btn btn-primary btn-block"
               style={{ backgroundColor: "#898989" }}
             >
@@ -229,7 +234,7 @@ function Register(props) {
           </div>
 
           {state.message && (
-            <div className="form-group">
+            <div className="form-group" style={{ paddingTop: "0.5rem" }}>
               <div
                 className={
                   state.success ? "alert alert-success" : "alert alert-danger"
@@ -240,7 +245,7 @@ function Register(props) {
               </div>
             </div>
           )}
-          <CheckButton
+          <Button
             style={{ display: "none" }}
             ref={(c) => {
               checkBtn = c;

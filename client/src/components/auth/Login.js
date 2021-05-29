@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
+import { Form } from "reactstrap";
+import { Input } from "reactstrap";
+import { Button } from "reactstrap";
 import PropTypes from "prop-types";
 
 import { required } from "./ValidationAlerts.js";
@@ -33,7 +33,7 @@ function Login(props) {
   };
 
   const handleLogin = (e) => {
-    e.preventDefaule();
+    e.preventDefault();
 
     setState((prev) => ({ ...prev, message: "", loading: true }));
     form.validateAll();
@@ -42,7 +42,7 @@ function Login(props) {
       AuthService.login(state.username, state.password).then(
         () => {
           props.history.push("/profile");
-          window.location.reload();
+          //window.location.reload();
         },
         (err) => {
           const resMsg =
@@ -110,6 +110,7 @@ function Login(props) {
 
           <div className="form-group">
             <button
+              type="submit"
               className="btn btn-primary btn-block"
               disabled={state.loading}
               style={{ backgroundColor: "#898989" }}
@@ -128,7 +129,7 @@ function Login(props) {
               </div>
             </div>
           )}
-          <CheckButton
+          <Button
             style={{ display: "none" }}
             ref={(c) => {
               checkBtn = c;

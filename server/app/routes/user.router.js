@@ -3,7 +3,7 @@ import express from "express";
 
 import controller from "../controllers/users.controller.js";
 
-const ALLOWED_IPS = ["127.0.0.1", "123.456.7.89"];
+//const ALLOWED_IPS = ["127.0.0.1", "123.456.7.89"];
 
 const ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated) {
@@ -16,13 +16,13 @@ const ensureAuthenticated = (req, res, next) => {
 
 const api = express.Router();
 
-api.use(function (req, res, next) {
+/*api.use(function (req, res, next) {
   if (ALLOWED_IPS.indexOf(req.ip) === -1) {
     res.status(401).send("Not authorized!");
   } else {
     next();
   }
-});
+});*/
 
 //login
 api.get("/login/failed", (req, res) => {

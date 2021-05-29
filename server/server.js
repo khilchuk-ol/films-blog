@@ -6,7 +6,6 @@ import cookieParser from "cookie-parser";
 import expSession from "express-session";
 import flash from "connect-flash";
 import passport from "passport";
-import busboy from "busboy";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -19,9 +18,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
-/*let corsOptions = {
-  origin: "http://localhost:8080",
-};*/
+let corsOptions = {
+  origin: "http://localhost:8081",
+};
 
 /* if u consider using ejs (embeded javascript) for views,
  * app.set("views", path.resolve(__dirname, "views"));
@@ -43,13 +42,13 @@ const app = express();
  */
 
 // configure app
-//app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(logger("dev"));
 
 app.use(express.json());
 app.use(express.urlencoded());
 
-app.use(cookieParser);
+app.use(cookieParser());
 
 app.use(
   expSession({
@@ -63,8 +62,6 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(busboy);
 
 //for static files
 const staticPath = path.resolve(__dirname, "public");

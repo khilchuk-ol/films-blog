@@ -45,9 +45,6 @@ function findAll(req, res) {
 
   User.paginate(condition, { offset, limit })
     .then(async (data) => {
-      for (let user of users) {
-        await user.populate("posts").execPopulate();
-      }
       res.send({
         totalItems: data.totalDocs,
         items: data.docs,
@@ -98,6 +95,7 @@ function update(req, res) {
   }
 
   const id = req.params.id;
+  req.body.posts = undefined;
 
   User.findByIdAndModify(id, req.body, { useFindAndModify: false })
     .then((data) => {
@@ -129,7 +127,11 @@ function remove(req, res) {
           message: `Cannot delete User with id=${id}. Maybe User was not found!`,
         });
       } else {
-        res.send({ message: "User was deleted successfully." });
+        Post.deleteMany({ author: id }).then((data) => {
+          res.send({
+            message: `User was deleted successfully. ${data.deletedCount} Posts of this user were deleted successfully!`,
+          });
+        });
       }
     })
     .catch((err) => {

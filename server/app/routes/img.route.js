@@ -1,5 +1,5 @@
 import express from "express";
-import busboy from "busboy";
+import Busboy from "busboy";
 import fs from "fs-extra";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -24,20 +24,26 @@ api.use(function (req, res, next) {
 });
 
 api.post("/upload/users/", (req, res) => {
-  let fstream;
-  req.pipe(req.busboy);
-  req.busboy.on("file", (fieldname, file, filename) => {
-    console.log("Uploading: " + filename);
+  const busboy = new Busboy({ headers: req.headers });
+  busboy.on("file", function (fieldname, file, filename, encoding, mimetype) {
     const localFileName = uuidv4() + filename.slice(filename.lastIndexOf("."));
-    fstream = fs.createWriteStream(
-      path.resolve(PUBLIC_DIR_NAME, "images", "users", localFileName)
+    const saveTo = path.resolve(
+      PUBLIC_DIR_NAME,
+      "images",
+      "users",
+      localFileName
     );
-    file.pipe(fstream);
-    fstream.on("close", function () {
-      console.log("Upload Finished");
-      res.send({ fileName: localFileName });
-    });
+
+    console.log("Uploading: " + saveTo);
+    file.pipe(fs.createWriteStream(saveTo));
   });
+
+  busboy.on("finish", function () {
+    console.log("Upload complete");
+    res.status(200).send({ fileName: localFileName });
+  });
+
+  return req.pipe(busboy);
 });
 
 export default api;

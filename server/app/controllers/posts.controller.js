@@ -95,6 +95,7 @@ function update(req, res) {
   }
 
   const id = req.params.id;
+  req.body.author = req.body.author.id;
 
   Post.findByIdAndModify(id, req.body, { useFindAndModify: false })
     .then((data) => {

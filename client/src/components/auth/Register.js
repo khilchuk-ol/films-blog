@@ -40,7 +40,7 @@ function Register(props) {
   });
 
   const [pictureState, setPictureState] = useState({
-    picture: "default.png",
+    fileName: "default.png",
     imageLoading: false,
     isValid: true,
     feedback: null,
@@ -73,7 +73,7 @@ function Register(props) {
         usernameState.username,
         emailState.email,
         passwordState.password,
-        formState.picture
+        pictureState.fileName
       ).then(
         (res) => {
           setFormState((prev) => ({

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import ImgService from "../../../services/image.service.js";
@@ -6,11 +6,23 @@ import { wrapInFeedback } from "../ValidationFeedback.js";
 
 import Spinner from "../../helping/Spinner.js";
 import { Input } from "reactstrap";
+import ImageCropper from "../../helping/ImageCropper.js";
 
 const PIC_FOLDER = "http://localhost:8080/images/users/";
 
 function AvatarInput(props) {
   const { state, setState, validations } = props;
+
+  const [cropState, setCropState] = useState({
+    display: "none",
+    src: null,
+    imgFile: null,
+    crop: {
+      unit: "%",
+      width: 30,
+      aspect: 16 / 16,
+    },
+  });
 
   const onChangePicture = (e) => {
     const file = Array.from(e.target.files)[0];
@@ -35,13 +47,37 @@ function AvatarInput(props) {
         isValid: true,
         feedback: null,
       }));
+
+      const src = URL.createObjectURL(file);
+
+      setCropState((prev) => ({
+        ...prev,
+        src,
+        imgFile: file,
+        display: "block",
+      }));
     }
+  };
+
+  const uploadImage = () => {
+    const file = cropState.croppedImgFile;
+
+    setCropState({
+      display: "none",
+      src: null,
+      imgFile: null,
+      crop: {
+        unit: "%",
+        width: 30,
+        aspect: 16 / 16,
+      },
+    });
 
     ImgService.uploadImg(file).then(
       (res) => {
         setState((prev) => ({
           ...prev,
-          picture: res.data.fileName,
+          fileName: res.data.fileName,
           imageLoading: false,
         }));
       },
@@ -69,7 +105,7 @@ function AvatarInput(props) {
             <span className="cursor-pointer">
               <label htmlFor="fileInput">
                 <img
-                  src={PIC_FOLDER + state.picture}
+                  src={PIC_FOLDER + state.fileName}
                   alt="profile-img"
                   className="profile-img-card img-thumbnail"
                   style={{
@@ -83,6 +119,7 @@ function AvatarInput(props) {
 
               <Input
                 hidden
+                accept="image/*"
                 id="fileInput"
                 type="file"
                 name="picture"
@@ -93,6 +130,11 @@ function AvatarInput(props) {
             {!state.isValid && state.feedback}
           </div>
         )}
+        <ImageCropper
+          state={cropState}
+          setState={setCropState}
+          onPhotoUpload={uploadImage}
+        />
       </div>
     </div>
   );

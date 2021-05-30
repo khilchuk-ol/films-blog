@@ -4,13 +4,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/App.css";
 import Login from "./components/auth/Login.js";
 import Register from "./components/auth/Register.js";
+import Context from "./context.js";
 
 function App() {
-  const history = ["/"];
   return (
-    <div className="App">
-      <Login history={history}></Login>
-    </div>
+    <Context.Provider value={{ history: [] }}>
+      <div className="App">
+        <Register></Register>
+      </div>
+    </Context.Provider>
   );
 }
 

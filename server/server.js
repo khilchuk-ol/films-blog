@@ -19,7 +19,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 
 let corsOptions = {
-  origin: "http://localhost:8081",
+  origin: "http://localhost:3000",
 };
 
 /* if u consider using ejs (embeded javascript) for views,
@@ -46,7 +46,7 @@ app.use(cors(corsOptions));
 app.use(logger("dev"));
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: false, limit: "50mb" }));
 
 app.use(cookieParser());
 

@@ -1,48 +1,52 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Form } from "reactstrap";
-import { Input } from "reactstrap";
-import { Button } from "reactstrap";
-import PropTypes from "prop-types";
 
-import { required } from "./ValidationAlerts.js";
+import { required } from "./ValidationFeedback.js";
 import AuthService from "../../services/auth.service.js";
+import Context from "../../context.js";
+
+import UsernameInput from "./inputs/UsernameInput.js";
+import PasswordInput from "./inputs/PasswordInput.js";
 
 function Login(props) {
-  const [state, setState] = useState({
-    username: "",
-    password: "",
+  const [formState, setFormState] = useState({
     loading: false,
     message: "",
   });
 
-  let form = {};
-  let checkBtn = {};
+  const [usernameState, setUsernameState] = useState({
+    username: "",
+    isValid: true,
+    feedback: null,
+  });
 
-  const onChangeUsername = (e) => {
-    setState((prev) => ({
-      ...prev,
-      username: e.target.value,
-    }));
-  };
+  const [passwordState, setPasswordState] = useState({
+    password: "",
+    isValid: true,
+    feedback: null,
+  });
 
-  const onChangePassword = (e) => {
-    setState((prev) => ({
-      ...prev,
-      password: e.target.value,
-    }));
-  };
+  const { history } = useContext(Context);
 
   const handleLogin = (e) => {
     e.preventDefault();
 
-    setState((prev) => ({ ...prev, message: "", loading: true }));
-    form.validateAll();
+    setFormState((prev) => ({ ...prev, message: "", loading: true }));
 
-    if (checkBtn.context._errors.length === 0) {
-      AuthService.login(state.username, state.password).then(
+    if (!usernameState.username || !passwordState.password) {
+      setFormState((prev) => ({
+        ...prev,
+        loading: false,
+        message: "Fields cannot be empty",
+      }));
+      return;
+    }
+
+    if (passwordState.isValid && usernameState.isValid) {
+      AuthService.login(usernameState.username, passwordState.password).then(
         () => {
-          props.history.push("/profile");
-          //window.location.reload();
+          history.push("/profile");
+          window.location.reload();
         },
         (err) => {
           const resMsg =
@@ -50,11 +54,14 @@ function Login(props) {
             err.message ||
             err.toString();
 
-          setState((prev) => ({ ...prev, loading: false, message: resMsg }));
+          setFormState({
+            loading: false,
+            message: resMsg,
+          });
         }
       );
     } else {
-      setState((prev) => ({ ...prev, loading: false }));
+      setFormState((prev) => ({ ...prev, loading: false }));
     }
   };
 
@@ -68,81 +75,44 @@ function Login(props) {
           backgroundColor: "#FFFF33",
         }}
       >
-        <Form
-          onSubmit={handleLogin}
-          ref={(c) => {
-            form = c;
-          }}
-        >
-          <div className="form-group">
-            <label
-              htmlFor="username"
-              style={{ color: "#898989", fontWeight: "500" }}
-            >
-              Username
-            </label>
-            <Input
-              type="text"
-              className="form-control"
-              name="username"
-              value={state.username}
-              onChange={onChangeUsername}
-              validations={[required]}
-            />
-          </div>
+        <Form onSubmit={handleLogin}>
+          <UsernameInput
+            state={usernameState}
+            setState={setUsernameState}
+            validations={[required]}
+          />
 
-          <div className="form-group" style={{ paddingBottom: "0.5rem" }}>
-            <label
-              htmlFor="password"
-              style={{ color: "#898989", fontWeight: "500" }}
-            >
-              Password
-            </label>
-            <Input
-              type="password"
-              className="form-control"
-              name="password"
-              value={state.password}
-              onChange={onChangePassword}
-              validations={[required]}
-            />
-          </div>
+          <PasswordInput
+            state={passwordState}
+            setState={setPasswordState}
+            validations={[required]}
+          />
 
           <div className="form-group">
             <button
               type="submit"
               className="btn btn-primary btn-block"
-              disabled={state.loading}
+              disabled={formState.loading}
               style={{ backgroundColor: "#898989" }}
             >
-              {state.loading && (
+              {formState.loading && (
                 <span className="spinner-border spinner-border-sm"></span>
               )}
               <span>Login</span>
             </button>
           </div>
 
-          {state.message && (
+          {formState.message && (
             <div className="form-group">
               <div className="alert alert-danger" role="alert">
-                {state.message}
+                {formState.message}
               </div>
             </div>
           )}
-          <Button
-            style={{ display: "none" }}
-            ref={(c) => {
-              checkBtn = c;
-            }}
-          />
         </Form>
       </div>
     </div>
   );
 }
-
-Login.protoTypes = {
-  history: PropTypes.arrayOf(PropTypes.string).isRequired,
-};
 
 export default Login;

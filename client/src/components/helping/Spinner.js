@@ -4,7 +4,7 @@ import "../../styles/spinner.css";
 
 export default function Spinner(props) {
   return (
-    <div class="lds-ring">
+    <div className="lds-ring">
       <div></div>
       <div></div>
       <div></div>

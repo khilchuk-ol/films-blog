@@ -1,109 +1,82 @@
 import React, { useState } from "react";
 import { Form } from "reactstrap";
-import { Input } from "reactstrap";
-import { Button } from "reactstrap";
 
-import Spinner from "../helping/Spinner.js";
 import AuthService from "../../services/auth.service.js";
-import ImgService from "../../services/image.service.js";
+
 import {
   required,
   validEmail,
   validPasword,
   validUsername,
   fileImage,
-} from "./ValidationAlerts.js";
-
-const PIC_FOLDER = "http://localhost:8080/images/users/";
+} from "./ValidationFeedback.js";
+import UsernameInput from "./inputs/UsernameInput.js";
+import PasswordInput from "./inputs/PasswordInput.js";
+import EmailInput from "./inputs/EmailInput.js";
+import AvatarInput from "./inputs/AvatarInput.js";
 
 function Register(props) {
-  const [state, setState] = useState({
-    username: "",
-    password: "",
-    email: "",
-    picture: "default.png",
-    imageLoading: false,
+  const [formState, setFormState] = useState({
     success: false,
     message: "",
   });
 
-  let form = {};
-  let fileForm = {};
-  let checkBtn = {};
+  const [usernameState, setUsernameState] = useState({
+    username: "",
+    isValid: true,
+    feedback: null,
+  });
 
-  const onChangeUsername = (e) => {
-    setState((prev) => ({
-      ...prev,
-      username: e.target.value,
-    }));
-  };
+  const [passwordState, setPasswordState] = useState({
+    password: "",
+    isValid: true,
+    feedback: null,
+  });
 
-  const onChangePassword = (e) => {
-    setState((prev) => ({
-      ...prev,
-      password: e.target.value,
-    }));
-  };
+  const [emailState, setEmailState] = useState({
+    email: "",
+    isValid: true,
+    feedback: null,
+  });
 
-  const onChangeEmail = (e) => {
-    setState((prev) => ({
-      ...prev,
-      email: e.target.value,
-    }));
-  };
-
-  const onChangePicture = (e) => {
-    setState((prev) => ({
-      ...prev,
-      imageLoading: true,
-    }));
-
-    const file = Array.from(e.target.files)[0];
-
-    ImgService.uploadImg(file).then(
-      (res) => {
-        fileForm.value = res.data.fileName;
-
-        setState((prev) => ({
-          ...prev,
-          picture: res.data.fileName,
-          imageLoading: false,
-        }));
-      },
-      (err) => {
-        const resMsg =
-          err.response?.data?.message ?? err.message ?? err.toString();
-
-        setState((prev) => ({
-          ...prev,
-          message: resMsg,
-          imageLoading: false,
-          success: false,
-        }));
-      }
-    );
-  };
+  const [pictureState, setPictureState] = useState({
+    picture: "default.png",
+    imageLoading: false,
+    isValid: true,
+    feedback: null,
+  });
 
   const handleRegister = (e) => {
     e.preventDefault();
 
-    setState((prev) => ({
+    setFormState((prev) => ({
       ...prev,
       success: false,
       message: "",
     }));
 
-    form.validateAll();
+    if (
+      !usernameState.username ||
+      !emailState.email ||
+      !passwordState.password
+    ) {
+      setFormState((prev) => ({
+        ...prev,
+        success: false,
+        message: "Fields cannot be empty",
+      }));
+      return;
+    }
 
-    if (checkBtn.context._errors.length === 0) {
+    if (usernameState.isValid && passwordState.isValid && emailState.isValid) {
       AuthService.register(
-        state.username,
-        state.email,
-        state.password,
-        state.picture
+        usernameState.username,
+        emailState.email,
+        passwordState.password,
+        formState.picture
       ).then(
         (res) => {
-          setState((prev) => ({
+          setFormState((prev) => ({
             ...prev,
             message: res.data.message,
             success: true,
@@ -113,7 +86,7 @@ function Register(props) {
           const resMsg =
             err.response?.data?.message ?? err.message ?? err.toString();
 
-          setState((prev) => ({
+          setFormState((prev) => ({
             ...prev,
             message: resMsg,
           }));
@@ -132,96 +105,30 @@ function Register(props) {
           backgroundColor: "#FFFF33",
         }}
       >
-        <div style={{ paddingBottom: "1rem", paddingTop: "1rem" }}>
-          {state.imageLoading ? (
-            <Spinner />
-          ) : (
-            <span className="cursor-pointer">
-              <label htmlFor="fileInput">
-                <img
-                  src={PIC_FOLDER + state.picture}
-                  alt="profile-img"
-                  className="profile-img-card img-thumbnail"
-                  style={{
-                    padding: "0",
-                    borderRadius: "50%",
-                    borderColor: "#898989",
-                    borderWidth: "medium",
-                  }}
-                />
-              </label>
+        <Form onSubmit={handleRegister}>
+          <AvatarInput
+            state={pictureState}
+            setState={setPictureState}
+            validations={[fileImage]}
+          />
 
-              <input
-                hidden
-                id="fileInput"
-                type="file"
-                name="picture"
-                onChange={onChangePicture}
-                validations={[fileImage]}
-                ref={(c) => {
-                  fileForm = c;
-                }}
-              ></input>
-            </span>
-          )}
-        </div>
+          <UsernameInput
+            state={usernameState}
+            setState={setUsernameState}
+            validations={[required, validUsername]}
+          />
 
-        <Form
-          onSubmit={handleRegister}
-          ref={(c) => {
-            form = c;
-          }}
-        >
-          <div className="form-group">
-            <label
-              htmlFor="username"
-              style={{ color: "#898989", fontWeight: "500" }}
-            >
-              Username
-            </label>
-            <Input
-              type="text"
-              className="form-control"
-              name="username"
-              value={state.username}
-              onChange={onChangeUsername}
-              validations={[required, validUsername]}
-            />
-          </div>
+          <EmailInput
+            state={emailState}
+            setState={setEmailState}
+            validations={[required, validEmail]}
+          />
 
-          <div className="form-group">
-            <label
-              htmlFor="email"
-              style={{ color: "#898989", fontWeight: "500" }}
-            >
-              Email
-            </label>
-            <Input
-              type="email"
-              className="form-control"
-              name="email"
-              value={state.email}
-              onChange={onChangeEmail}
-              validations={[required, validEmail]}
-            />
-          </div>
-
-          <div className="form-group" style={{ paddingBottom: "0.5rem" }}>
-            <label
-              htmlFor="password"
-              style={{ color: "#898989", fontWeight: "500" }}
-            >
-              Password
-            </label>
-            <Input
-              type="password"
-              className="form-control"
-              name="password"
-              value={state.password}
-              onChange={onChangePassword}
-              validations={[required, validPasword]}
-            />
-          </div>
+          <PasswordInput
+            state={passwordState}
+            setState={setPasswordState}
+            validations={[required, validPasword]}
+          />
 
           <div className="form-group">
             <button
@@ -233,24 +140,20 @@ function Register(props) {
             </button>
           </div>
 
-          {state.message && (
+          {formState.message && (
             <div className="form-group" style={{ paddingTop: "0.5rem" }}>
               <div
                 className={
-                  state.success ? "alert alert-success" : "alert alert-danger"
+                  formState.success
+                    ? "alert alert-success"
+                    : "alert alert-danger"
                 }
                 role="alert"
               >
-                {state.message}
+                {formState.message}
               </div>
             </div>
           )}
-          <Button
-            style={{ display: "none" }}
-            ref={(c) => {
-              checkBtn = c;
-            }}
-          />
         </Form>
       </div>
     </div>

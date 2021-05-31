@@ -4,11 +4,9 @@ import "react-image-crop/dist/ReactCrop.css";
 import PropTypes from "prop-types";
 import "../../styles/modal.css";
 
-const PIC_FOLDER = "http://localhost:8080/images/users/";
-
 function ImageCropper(props) {
   const { state, setState } = props;
-  let modal;
+  let fileUrl;
 
   const closeModal = () => {
     setState((prev) => ({
@@ -17,18 +15,18 @@ function ImageCropper(props) {
     }));
   };
 
-  const onCropFinish = (e) => {
-    closeModal();
-    props.onPhotoUpload(e);
+  const onImageLoaded = (image) => {
+    setState((prev) => ({
+      ...prev,
+      imgFile: image,
+    }));
   };
 
-  window.onclick = function (event) {
-    if (event.target === modal) {
-      setState((prev) => ({
-        ...prev,
-        display: "none",
-      }));
-    }
+  const onCropFinish = (e) => {
+    e.preventDefault();
+
+    closeModal();
+    props.onPhotoUpload(e);
   };
 
   const onCropComplete = (crop) => {
@@ -46,8 +44,10 @@ function ImageCropper(props) {
 
   const makeClientCrop = async (crop) => {
     if (state.imgFile && crop.width && crop.height) {
+      const img = new Image();
+      img.src = state.src;
       const [croppedImageUrl, croppedImageFile] = await getCroppedImg(
-        state.imgFile,
+        img,
         crop,
         "newFile.jpeg"
       );
@@ -88,16 +88,16 @@ function ImageCropper(props) {
           return;
         }
         blob.name = fileName;
-        window.URL.revokeObjectURL(this.fileUrl);
-        this.fileUrl = window.URL.createObjectURL(blob);
-        resolve([this.fileUrl, blob]);
+        window.URL.revokeObjectURL(fileUrl);
+        fileUrl = window.URL.createObjectURL(blob);
+        resolve([fileUrl, blob]);
       }, "image/jpeg");
     });
   };
 
   return (
     <div>
-      <div id="myModal" className="modal" display={state.display}>
+      <div id="myModal" className="modal" style={{ display: state.display }}>
         <div className="modal-content">
           <span className="close" onClick={closeModal}>
             &times;
@@ -108,16 +108,20 @@ function ImageCropper(props) {
                 src={state.src}
                 crop={state.crop}
                 ruleOfThirds
+                onImageLoaded={onImageLoaded}
                 onComplete={onCropComplete}
                 onChange={onCropChange}
+                style={{ width: "50%" }}
               />
             )}
             {state.croppedImageUrl && (
-              <img
-                alt="Crop"
-                style={{ maxWidth: "100%" }}
-                src={state.croppedImageUrl}
-              />
+              <div>
+                <img
+                  alt="Crop"
+                  style={{ maxWidth: "100%", padding: "1rem" }}
+                  src={state.croppedImageUrl}
+                />
+              </div>
             )}
 
             <div className="form-group">

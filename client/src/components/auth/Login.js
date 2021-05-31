@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
 import { Form } from "reactstrap";
+import PropTypes from "prop-types";
 
 import { required } from "./ValidationFeedback.js";
 import AuthService from "../../services/auth.service.js";
-import Context from "../../context.js";
+import Context from "../../HistoryContext.js";
 
 import UsernameInput from "./inputs/UsernameInput.js";
 import PasswordInput from "./inputs/PasswordInput.js";
@@ -26,7 +27,7 @@ function Login(props) {
     feedback: null,
   });
 
-  const { history } = useContext(Context);
+  //const { history, pushToHistory } = useContext(Context);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -45,7 +46,7 @@ function Login(props) {
     if (passwordState.isValid && usernameState.isValid) {
       AuthService.login(usernameState.username, passwordState.password).then(
         () => {
-          history.push("/profile");
+          props.pushToHistory("/profile");
           window.location.reload();
         },
         (err) => {
@@ -103,7 +104,7 @@ function Login(props) {
           </div>
 
           {formState.message && (
-            <div className="form-group">
+            <div className="form-group" style={{ padding: "0.5rem" }}>
               <div className="alert alert-danger" role="alert">
                 {formState.message}
               </div>
@@ -114,5 +115,9 @@ function Login(props) {
     </div>
   );
 }
+
+Login.protoTypes = {
+  pushToHistory: PropTypes.func.isRequired,
+};
 
 export default Login;

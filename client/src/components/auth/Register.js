@@ -46,6 +46,17 @@ function Register(props) {
     feedback: null,
   });
 
+  const parseErrorMsg = (err, msg) => {
+    if (msg && msg.search("E11000") !== -1) {
+      let field = msg.slice(msg.search("{") + 2);
+      field = field.slice(0, field.search(":"));
+
+      return `Oops, it seems user with that such ${field} has already been registered. Try choosing new ${field}`;
+    }
+
+    return err.reponse.statusText;
+  };
+
   const handleRegister = (e) => {
     e.preventDefault();
 
@@ -78,7 +89,8 @@ function Register(props) {
         (res) => {
           setFormState((prev) => ({
             ...prev,
-            message: res.data.message,
+            data: res.data,
+            message: "Your account has been registered",
             success: true,
           }));
         },
@@ -88,7 +100,7 @@ function Register(props) {
 
           setFormState((prev) => ({
             ...prev,
-            message: resMsg,
+            message: parseErrorMsg(err, resMsg),
           }));
         }
       );

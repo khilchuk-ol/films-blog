@@ -43,7 +43,6 @@ function AvatarInput(props) {
 
       setState((prev) => ({
         ...prev,
-        imageLoading: true,
         isValid: true,
         feedback: null,
       }));
@@ -60,7 +59,12 @@ function AvatarInput(props) {
   };
 
   const uploadImage = () => {
-    const file = cropState.croppedImgFile;
+    const file = cropState.croppedImageFile;
+
+    setState((prev) => ({
+      ...prev,
+      imageLoading: true,
+    }));
 
     setCropState({
       display: "none",

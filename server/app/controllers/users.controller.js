@@ -22,7 +22,7 @@ function create(req, res) {
 
   //Save in the db
   user
-    .save(user)
+    .save()
     .then((data) => {
       res.send(data);
     })

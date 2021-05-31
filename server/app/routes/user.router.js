@@ -31,18 +31,18 @@ api.get("/login/failed", (req, res) => {
   });
 });
 
-api.post("/login", async (req, res) => {
+api.post(
+  "/login",
   passport.authenticate("login", {
-    successRedirect: "/",
-    failureRedirect: "/login/failed",
     failureFlash: true,
-  });
-
-  const currentUser = (
-    await controller.getById(req.session.passport.user)
-  ).toObject();
-  res.send(currentUser);
-});
+  }),
+  (req, res) => {
+    /*const currentUser = (
+      await controller.getById(req.session.passport.user)
+    ).toObject();*/
+    res.send(req.user);
+  }
+);
 
 //logout
 api.get("/logout", function (req, res) {

@@ -2,6 +2,18 @@
   text-align: center;
 }
 
+body {
+  line-height: 2;
+}
+
+.App button {
+  border: none;
+}
+
+.App button:hover {
+  filter: brightness(85%)
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -39,4 +51,17 @@
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.navbar-gray {
+  background-color: #898989;
+  padding-left: 3rem;
+}
+
+.navbar-gray a {
+  color: #FFFF33;
+}
+
+.navbar-gray a:hover {
+  color: #d8d82b
 }

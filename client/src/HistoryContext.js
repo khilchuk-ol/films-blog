@@ -2,7 +2,7 @@ import React from "react";
 
 const Context = React.createContext({
   history: [],
-  pushToHistory: (str) => history.push(str),
+  pushToHistory: (str) => this.history.push(str),
 });
 
 export default Context;

@@ -27,7 +27,7 @@ function Login(props) {
     feedback: null,
   });
 
-  //const { history, pushToHistory } = useContext(Context);
+  const { history, pushToHistory } = useContext(Context);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -46,7 +46,7 @@ function Login(props) {
     if (passwordState.isValid && usernameState.isValid) {
       AuthService.login(usernameState.username, passwordState.password).then(
         () => {
-          props.pushToHistory("/profile");
+          pushToHistory("/profile");
           window.location.reload();
         },
         (err) => {

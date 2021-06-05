@@ -4,13 +4,14 @@
 
 body {
   line-height: 2;
+  color: #898989;
 }
 
 .App button {
   border: none;
 }
 
-.App button:hover {
+.App button:hover, .link:hover {
   filter: brightness(85%)
 }
 
@@ -63,5 +64,16 @@ body {
 }
 
 .navbar-gray a:hover {
-  color: #d8d82b
+  color: #d8d82b;
+}
+
+.link, .link::after {
+  color: #a8a820;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  color: #a8a820;
+  text-decoration: none;
 }

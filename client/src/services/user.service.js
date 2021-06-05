@@ -5,7 +5,7 @@ import authService from "./auth.service.js";
 const API_URL = "http://localhost:8080/api/users/";
 
 class UserService {
-  async getAllUsers(username, page, size) {
+  async getAllUsers(page, size, username = null) {
     return axios.get(
       API_URL + "",
       username ? { username, page, size } : { page, size }
@@ -17,7 +17,7 @@ class UserService {
   }
 
   async updateUser(user) {
-    return axios.post(API_URL + `/edit/${id}`, user);
+    return axios.post(API_URL + `/edit/${user.id}`, user);
   }
 
   async deleteCurrentUser() {

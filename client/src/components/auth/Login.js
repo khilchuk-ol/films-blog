@@ -116,7 +116,7 @@ function Login(props) {
   );
 }
 
-Login.protoTypes = {
+Login.propTypes = {
   pushToHistory: PropTypes.func.isRequired,
 };
 

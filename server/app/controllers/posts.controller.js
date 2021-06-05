@@ -124,7 +124,7 @@ function remove(req, res) {
           message: `Cannot delete Post with id=${id}. Maybe Post was not found!`,
         });
       } else {
-        res.send({ message: "Post was deleted successfully." });
+        res.status(200).send({ message: "Post was deleted successfully." });
       }
     })
     .catch((err) => {

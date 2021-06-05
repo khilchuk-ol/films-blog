@@ -144,7 +144,7 @@ function AvatarInput(props) {
   );
 }
 
-AvatarInput.protoTypes = {
+AvatarInput.propTypes = {
   state: PropTypes.object.isRequired,
   setState: PropTypes.func.isRequired,
   validations: PropTypes.arrayOf(PropTypes.func),

@@ -47,7 +47,7 @@ function EmailInput(props) {
   );
 }
 
-EmailInput.protoTypes = {
+EmailInput.propTypes = {
   state: PropTypes.object.isRequired,
   setState: PropTypes.func.isRequired,
   validations: PropTypes.arrayOf(PropTypes.func),

@@ -140,7 +140,7 @@ function ImageCropper(props) {
   );
 }
 
-ImageCropper.protoTypes = {
+ImageCropper.propTypes = {
   state: PropTypes.object.isRequired,
   setState: PropTypes.func.isRequired,
   onPhotoUpload: PropTypes.func.isRequired,

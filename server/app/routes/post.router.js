@@ -23,6 +23,6 @@ api.get("/edit/:id", controller.findOne);
 api.post("/edit/:id", controller.update);
 
 api.get("/delete/:id", controller.findOne);
-api.post("delete/:id", controller.remove);
+api.post("/delete/:id", controller.remove);
 
 export default api;

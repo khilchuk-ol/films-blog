@@ -47,7 +47,7 @@ function UsernameInput(props) {
   );
 }
 
-UsernameInput.protoTypes = {
+UsernameInput.propTypes = {
   state: PropTypes.object.isRequired,
   setState: PropTypes.func.isRequired,
   validations: PropTypes.arrayOf(PropTypes.func),

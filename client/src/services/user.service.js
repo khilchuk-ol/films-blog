@@ -6,10 +6,9 @@ const API_URL = "http://localhost:8080/api/users/";
 
 class UserService {
   async getAllUsers(page, size, username = null) {
-    return axios.get(
-      API_URL + "",
-      username ? { username, page, size } : { page, size }
-    );
+    return axios.get(API_URL + "", {
+      params: username ? { username, page, size } : { page, size },
+    });
   }
 
   async getOne(id) {

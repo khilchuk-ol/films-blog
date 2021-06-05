@@ -59,15 +59,16 @@ body {
   padding-left: 3rem;
 }
 
-.navbar-gray a {
+.yellow-link, .yellow-link:active{
   color: #FFFF33;
 }
 
-.navbar-gray a:hover {
-  color: #d8d82b;
+.yellow-link:hover {
+  color: #FFFF33;
+  filter: brightness(85%);
 }
 
-.link, .link::after {
+.link, .link:active {
   color: #a8a820;
   text-decoration: none;
   font-weight: 600;
@@ -76,4 +77,8 @@ body {
 .link:hover {
   color: #a8a820;
   text-decoration: none;
+}
+
+.nav-link, .nav-link:active {
+  color: #FFFF33;
 }

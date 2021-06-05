@@ -4,11 +4,11 @@ const API_URL = "http://localhost:8080/api/posts/";
 
 class PostService {
   async getAllPosts(page, size, title = null, authorId = null) {
-    const body = title ? { title, page, size } : { page, size };
+    const filter = title ? { title, page, size } : { page, size };
     if (authorId) {
-      body.author = authorId;
+      filter.author = authorId;
     }
-    return axios.get(API_URL + "", body);
+    return axios.get(API_URL + "", { params: filter });
   }
 
   async getOne(id) {

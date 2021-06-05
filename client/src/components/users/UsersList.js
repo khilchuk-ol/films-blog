@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import UserService from "../../services/user.service";
 import UserItem from "../users/UserItem";
 
-function UsersList() {
+function UsersList(props) {
+  const { username } = props;
   const [state, setState] = useState({
     users: [],
     page: 0,
@@ -10,7 +11,7 @@ function UsersList() {
   });
 
   useEffect(() => {
-    UserService.getAllUsers(state.page, state.size).then((res) => {
+    UserService.getAllUsers(state.page, state.size, username).then((res) => {
       setState((prev) => ({
         ...prev,
         users: res.data.items,

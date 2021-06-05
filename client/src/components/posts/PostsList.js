@@ -4,7 +4,7 @@ import PostService from "../../services/post.service";
 import PostItem from "./PostItem";
 
 function PostsList(props) {
-  const { isEditable } = props;
+  const { isEditable, title, authorId } = props;
   const [state, setState] = useState({
     posts: [],
     page: 0,
@@ -12,12 +12,14 @@ function PostsList(props) {
   });
 
   useEffect(() => {
-    PostService.getAllPosts(state.page, state.size).then((res) => {
-      setState((prev) => ({
-        ...prev,
-        posts: res.data.items,
-      }));
-    });
+    PostService.getAllPosts(state.page, state.size, title, authorId).then(
+      (res) => {
+        setState((prev) => ({
+          ...prev,
+          posts: res.data.items,
+        }));
+      }
+    );
   }, [state.page]);
 
   const removePost = (id) => {

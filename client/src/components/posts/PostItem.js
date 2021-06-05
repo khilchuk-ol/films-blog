@@ -17,7 +17,28 @@ function PostItem(props) {
       }}
     >
       <div className="container-lg mt-3 p-3 border">
-        <h1>{item.title}</h1>
+        <div className="row container-lg" style={{ display: "inline-flex" }}>
+          <h1 className="col">{item.title}</h1>{" "}
+          {isEditable ? (
+            <button
+              type="button"
+              className="col-sm"
+              style={{
+                fontSize: "xxx-large",
+                color: "red",
+                background: "none",
+                textAlign: "right",
+                padding: 0,
+                height: "32px",
+              }}
+              onClick={() => {
+                removeItem(item.id);
+              }}
+            >
+              &times;
+            </button>
+          ) : null}
+        </div>
         <Link
           to={`/users/${item.author._id}`}
           className="link"
@@ -33,18 +54,8 @@ function PostItem(props) {
             paddingTop: "1rem",
           }}
         >
-          {item.date}
+          {new Date(item.date).toLocaleString()}
         </p>
-        {isEditable ? (
-          <button
-            type="button"
-            onClick={() => {
-              removeItem(item.id);
-            }}
-          >
-            &times;
-          </button>
-        ) : null}
       </div>
     </Link>
   );

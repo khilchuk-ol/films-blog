@@ -10,7 +10,7 @@ function Navbar(props) {
     <nav className="navbar navbar-expand navbar-gray">
       <a
         href="/posts"
-        className="navbar-brand"
+        className="navbar-brand yellow-link"
         onClick={() => {
           pushToHistory("/posts");
         }}
@@ -21,7 +21,7 @@ function Navbar(props) {
         <li className="nav-item">
           <Link
             to={"/posts"}
-            className="nav-link"
+            className="yellow-link nav-link"
             onClick={() => {
               pushToHistory("/posts");
             }}
@@ -32,7 +32,7 @@ function Navbar(props) {
         <li className="nav-item">
           <Link
             to={"/users"}
-            className="nav-link"
+            className="yellow-link nav-link"
             onClick={() => {
               pushToHistory("/users");
             }}
@@ -52,7 +52,7 @@ function Navbar(props) {
         >
           <Link
             to={"/add"}
-            className="nav-link nav-item"
+            className="yellow-link nav-link nav-item"
             style={{
               paddingRight: "1rem",
             }}

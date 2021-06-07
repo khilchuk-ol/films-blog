@@ -1,15 +1,14 @@
 import React, { useContext, useState } from "react";
 import { Form } from "reactstrap";
-import PropTypes from "prop-types";
 
-import { required } from "./ValidationFeedback.js";
+import { required } from "../helping/ValidationFeedback.js";
 import AuthService from "../../services/auth.service.js";
 import Context from "../../HistoryContext.js";
 
-import UsernameInput from "./inputs/UsernameInput.js";
-import PasswordInput from "./inputs/PasswordInput.js";
+import UsernameInput from "../helping/inputs/UsernameInput.js";
+import PasswordInput from "../helping/inputs/PasswordInput.js";
 
-function Login(props) {
+function Login() {
   const [formState, setFormState] = useState({
     loading: false,
     message: "",
@@ -27,7 +26,7 @@ function Login(props) {
     feedback: null,
   });
 
-  const { history, pushToHistory } = useContext(Context);
+  const { pushToHistory } = useContext(Context);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -50,10 +49,14 @@ function Login(props) {
           window.location.reload();
         },
         (err) => {
-          const resMsg =
+          let resMsg =
             (err.response && err.response.data && err.response.data.message) ||
             err.message ||
             err.toString();
+
+          if (resMsg.search("401") !== -1) {
+            resMsg = "Incorrect username or password";
+          }
 
           setFormState({
             loading: false,
@@ -115,9 +118,5 @@ function Login(props) {
     </div>
   );
 }
-
-Login.propTypes = {
-  pushToHistory: PropTypes.func.isRequired,
-};
 
 export default Login;

@@ -17,26 +17,51 @@ function PostItem(props) {
       }}
     >
       <div className="container-lg mt-3 p-3 border">
-        <div className="row container-lg" style={{ display: "inline-flex" }}>
-          <h1 className="col">{item.title}</h1>{" "}
+        <div className="row container-lg">
+          <h1 className="col-10">{item.title}</h1>{" "}
           {isEditable ? (
-            <button
-              type="button"
-              className="col-sm"
-              style={{
-                fontSize: "xxx-large",
-                color: "red",
-                background: "none",
-                textAlign: "right",
-                padding: 0,
-                height: "32px",
-              }}
-              onClick={() => {
-                removeItem(item.id);
-              }}
-            >
-              &times;
-            </button>
+            <div className="col">
+              <button
+                type="button"
+                className="btn"
+                style={{
+                  background: "#898989",
+                  color: "#FFFF33",
+                  fontSize: "larger",
+                }}
+              >
+                Edit
+                <Link
+                  hidden
+                  to={`/posts/edit/${item.id}`}
+                  className="nav-link"
+                  onClick={() => {
+                    pushToHistory(`/posts/edit/${item.id}`);
+                  }}
+                />
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-danger"
+                style={{
+                  fontSize: "larger",
+                  float: "right",
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (
+                    window.confirm(
+                      "Are you sure you want to delete this post? It won't be available anymore"
+                    )
+                  ) {
+                    removeItem(item.id);
+                  }
+                }}
+              >
+                Remove
+              </button>
+            </div>
           ) : null}
         </div>
         <Link

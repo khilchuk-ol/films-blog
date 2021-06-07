@@ -54,6 +54,8 @@ function PostsList(props) {
 
 PostsList.propTypes = {
   isEditable: PropTypes.bool.isRequired,
+  title: PropTypes.string,
+  authorId: PropTypes.string,
 };
 
 export default PostsList;

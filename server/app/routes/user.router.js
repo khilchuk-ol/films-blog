@@ -60,17 +60,14 @@ api.get("/:id", controller.findOne);
 //edit profile
 api.get("/edit/:id", ensureAuthenticated, controller.findOne);
 
-api.post("/edit/:id", ensureAuthenticated, function (req, res) {
-  if (controller.update(req, res)) {
-    req.flash("info", "Profile updated!");
-  }
-  res.redirect("/edit");
-});
+api.post("/edit/:id", ensureAuthenticated, controller.update);
 
 api.get("/delete/:id", ensureAuthenticated, controller.findOne);
 api.post("/delete/:id", ensureAuthenticated, (req, res) => {
   controller.remove(req, res);
   req.redirect("/logout");
 });
+
+api.post("/confirm", ensureAuthenticated, controller.confirmPwd);
 
 export default api;

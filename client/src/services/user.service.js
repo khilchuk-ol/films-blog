@@ -16,7 +16,7 @@ class UserService {
   }
 
   async updateUser(user) {
-    return axios.post(API_URL + `/edit/${user.id}`, user);
+    return axios.post(API_URL + `edit/${user.id}`, user);
   }
 
   async deleteCurrentUser() {

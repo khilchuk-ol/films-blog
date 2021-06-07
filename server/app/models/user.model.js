@@ -24,7 +24,7 @@ export default (mongoose, mongoosePaginate) => {
             return v.search(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) > -1;
           },
           message: (props) =>
-            `${props.value} is not a valid phone number!\nIt must contain at least one letter and one number`,
+            `${props.value} is not a valid password!\nIt must contain at least one letter and one number`,
         },
       },
       email: {
@@ -68,7 +68,7 @@ export default (mongoose, mongoosePaginate) => {
     return object;
   });
 
-  schema.pre("save", function (done) {
+  const encrypt = (done) => {
     let user = this;
 
     if (!user.isModified("password")) {
@@ -89,7 +89,10 @@ export default (mongoose, mongoosePaginate) => {
         done();
       });
     });
-  });
+  };
+
+  schema.pre("save", encrypt);
+  schema.pre("findOneAndUpdate", encrypt);
 
   schema.methods.checkPassword = function (guess, done) {
     bcrypt.compare(guess, this.password, function (err, isMatch) {

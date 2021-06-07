@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import ImgService from "../../../services/image.service.js";
-import { wrapInFeedback } from "../ValidationFeedback.js";
+import { wrapInFeedback } from "../../helping/ValidationFeedback.js";
 
 import Spinner from "../../helping/Spinner.js";
 import { Input } from "reactstrap";

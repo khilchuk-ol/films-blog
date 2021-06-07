@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Form } from "reactstrap";
-
-import AuthService from "../../services/auth.service.js";
+import PropTypes from "prop-types";
 
 import {
   required,
@@ -9,20 +8,24 @@ import {
   validPasword,
   validUsername,
   fileImage,
-} from "../helping/ValidationFeedback.js";
+} from "../helping/ValidationFeedback";
 import UsernameInput from "../helping/inputs/UsernameInput";
 import PasswordInput from "../helping/inputs/PasswordInput.js";
 import EmailInput from "../helping/inputs/EmailInput.js";
 import AvatarInput from "../helping/inputs/AvatarInput.js";
+import UserService from "../../services/user.service.js";
+import AuthService from "../../services/auth.service.js";
 
-function Register(props) {
+function EditUser() {
+  const user = AuthService.getCurrentUser();
+
   const [formState, setFormState] = useState({
     success: false,
     message: "",
   });
 
   const [usernameState, setUsernameState] = useState({
-    username: "",
+    username: user.username,
     isValid: true,
     feedback: null,
   });
@@ -34,13 +37,13 @@ function Register(props) {
   });
 
   const [emailState, setEmailState] = useState({
-    email: "",
+    email: user.email,
     isValid: true,
     feedback: null,
   });
 
   const [pictureState, setPictureState] = useState({
-    fileName: "default.png",
+    fileName: user.picture,
     imageLoading: false,
     isValid: true,
     feedback: null,
@@ -54,10 +57,10 @@ function Register(props) {
       return `Oops, it seems user with such ${field} has already been registered. Try choosing new ${field}`;
     }
 
-    return err.reponse.statusText;
+    return err.response.statusText;
   };
 
-  const handleRegister = (e) => {
+  const handleEdit = (e) => {
     e.preventDefault();
 
     setFormState((prev) => ({
@@ -80,19 +83,24 @@ function Register(props) {
     }
 
     if (usernameState.isValid && passwordState.isValid && emailState.isValid) {
-      AuthService.register(
-        usernameState.username,
-        emailState.email,
-        passwordState.password,
-        pictureState.fileName
-      ).then(
+      const newUser = {
+        id: user.id,
+        username: usernameState.username,
+        email: emailState.email,
+        password: passwordState.password,
+        picture: pictureState.fileName,
+      };
+
+      UserService.updateUser(newUser).then(
         (res) => {
           setFormState((prev) => ({
             ...prev,
             data: res.data,
-            message: "Your account has been registered",
+            message: "Your account has been edited",
             success: true,
           }));
+
+          AuthService.login(usernameState.username, passwordState.password);
         },
         (err) => {
           const resMsg =
@@ -117,7 +125,7 @@ function Register(props) {
           backgroundColor: "#FFFF33",
         }}
       >
-        <Form onSubmit={handleRegister}>
+        <Form onSubmit={handleEdit}>
           <AvatarInput
             state={pictureState}
             setState={setPictureState}
@@ -148,7 +156,7 @@ function Register(props) {
               className="btn btn-primary btn-block"
               style={{ backgroundColor: "#898989" }}
             >
-              <span>Register</span>
+              <span>Save</span>
             </button>
           </div>
 
@@ -172,4 +180,8 @@ function Register(props) {
   );
 }
 
-export default Register;
+EditUser.propTypes = {
+  user: PropTypes.object.isRequired,
+};
+
+export default EditUser;

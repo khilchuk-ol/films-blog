@@ -5,6 +5,7 @@ import { Switch, Route } from "react-router-dom";
 import PostsList from "./posts/PostsList";
 import UsersList from "./users/UsersList";
 import User from "./users/User";
+import EditUser from "./users/EditUser";
 
 export default function Router() {
   return (
@@ -16,6 +17,7 @@ export default function Router() {
         <Route exact path={["/users"]} component={UsersList} />
         {/*<Route exact path="/add" component={AddPost} />
         <Route path="/posts/:id" component={Post} />*/}
+        <Route path={["/profile/edit/"]} component={EditUser} />
         <Route path={["/profile", "/users/:id"]} component={User} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />

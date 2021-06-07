@@ -87,7 +87,7 @@ async function getById(id) {
 }
 
 function update(req, res) {
-  if (!res.body) {
+  if (!req.body) {
     res.status(400).send({
       message: "Data to update cannot be empty",
     });
@@ -97,23 +97,27 @@ function update(req, res) {
   const id = req.params.id;
   req.body.posts = undefined;
 
-  User.findByIdAndModify(id, req.body, { useFindAndModify: false })
+  User.findOneAndUpdate({ _id: id }, req.body, { useFindAndModify: false })
     .then((data) => {
       if (!data) {
         res.status(404).send({
           message: `Cannot update User with id=${id}. Maybe Post was not found!`,
         });
-        return false;
       } else {
+        if (
+          req.session.passport &&
+          req.session.passport.user &&
+          res.locals.currentUser.id === id
+        ) {
+          res.locals.currentUser = getById(id);
+        }
         res.send({ message: "User was updated successfully." });
-        return true;
       }
     })
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Error updating User with id=" + id,
       });
-      return false;
     });
 }
 
@@ -141,6 +145,21 @@ function remove(req, res) {
     });
 }
 
+function confirmPwd(req, res) {
+  const pwd = req.body.password;
+  res.locals.currentUser.checkPassword(pwd, function (err, isMatch) {
+    if (err) {
+      res.status(500).send({ message: err.message });
+    }
+
+    if (isMatch) {
+      res.send({ result: true });
+    } else {
+      res.send({ result: false });
+    }
+  });
+}
+
 const controller = {
   create,
   findOne,
@@ -148,6 +167,7 @@ const controller = {
   update,
   remove,
   getById,
+  confirmPwd,
 };
 
 export default controller;

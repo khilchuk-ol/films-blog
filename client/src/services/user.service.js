@@ -16,7 +16,13 @@ class UserService {
   }
 
   async updateUser(user) {
-    return axios.post(API_URL + `edit/${user.id}`, user);
+    return axios.post(API_URL + `edit/${user.id}`, user).then((res) => {
+      if (res.data?.user?.username) {
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+      }
+
+      return res.data;
+    });
   }
 
   async deleteCurrentUser() {

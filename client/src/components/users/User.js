@@ -88,7 +88,7 @@ function User() {
       <div>
         <PostsList
           isEditable={state.isCurrentUser}
-          authorId={id ? id : state.user.id}
+          authorId={id ? id : state.user._id}
         />
       </div>
     </div>

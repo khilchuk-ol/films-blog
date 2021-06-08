@@ -64,9 +64,9 @@ function Navbar(props) {
           </Link>
           <button id="profilePic" style={{ background: "none" }}>
             <Link
-              to={"/profile"}
+              to={`/users/${currentUser._id}`}
               onClick={() => {
-                pushToHistory("/profile");
+                pushToHistory(`/users/${currentUser._id}`);
               }}
             >
               <img

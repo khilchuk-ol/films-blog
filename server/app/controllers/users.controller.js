@@ -109,9 +109,12 @@ function update(req, res) {
           req.session.passport.user &&
           res.locals.currentUser.id === id
         ) {
-          res.locals.currentUser = getById(id);
+          res.locals.currentUser = data.toObject();
         }
-        res.send({ message: "User was updated successfully." });
+        res.send({
+          message: "User was updated successfully.",
+          user: data.toObject(),
+        });
       }
     })
     .catch((err) => {

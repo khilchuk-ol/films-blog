@@ -68,12 +68,8 @@ export default (mongoose, mongoosePaginate) => {
     return object;
   });
 
-  const encrypt = (done) => {
+  const encrypt = function (done) {
     let user = this;
-
-    if (!user.isModified("password")) {
-      return done();
-    }
 
     bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
       if (err) {

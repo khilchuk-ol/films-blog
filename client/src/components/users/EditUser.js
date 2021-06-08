@@ -95,12 +95,9 @@ function EditUser() {
         (res) => {
           setFormState((prev) => ({
             ...prev,
-            data: res.data,
             message: "Your account has been edited",
             success: true,
           }));
-
-          AuthService.login(usernameState.username, passwordState.password);
         },
         (err) => {
           const resMsg =
@@ -179,9 +176,5 @@ function EditUser() {
     </div>
   );
 }
-
-EditUser.propTypes = {
-  user: PropTypes.object.isRequired,
-};
 
 export default EditUser;
